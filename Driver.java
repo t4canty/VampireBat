@@ -1,8 +1,8 @@
+package src;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,46 +13,45 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.NonReadableChannelException;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 
 public class Driver extends JPanel implements ActionListener, KeyListener {
+	static  String src = new File("").getAbsolutePath() + "/src/";
 	boolean stop = true;
-	Frog pFrog = new Frog("C:\\Users\\Tom\\eclipse-workspace\\Frogger\\src\\Untitledbat.gif");
+	Frog pFrog = new Frog(src + "Untitledbat.gif");
 	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	static int table_width = (int) screenSize.getWidth(), table_height = (int) screenSize.getHeight();
 	Rectangle playeRectangle = pFrog.getRectangle();
-	Enemy fire = new Enemy("C:\\Users\\Tom\\eclipse-workspace\\Frogger\\src\\fire.gif", table_width/2 + 150 + 100, 450, 150);
+	Enemy fire = new Enemy(src + "fire.gif", table_width/2 + 150 + 100, 450, table_height/4);
 	Rectangle fireRectangle = fire.getRectangle();
 	static Fire fireObj = new Fire(table_width, table_height);
 	static FireEventListener mListener = new AfterFireEvent();
 	static Enemy enemyList0[] = new Enemy[15];
 	static Rectangle[] enemyRectangles0 = new Rectangle[15];
-	static Enemy enemyList1[] = new Enemy[4];
-	static Rectangle[] enemyRectangles1 = new Rectangle[4];
-	static Enemy enemyList2[] = new Enemy[7];
-	static Rectangle[] enemyRectangles2 = new Rectangle[7];
+	static Enemy enemyList1[] = new Enemy[6];
+	static Rectangle[] enemyRectangles1 = new Rectangle[6];
+	static Enemy enemyList2[] = new Enemy[9];
+	static Rectangle[] enemyRectangles2 = new Rectangle[9];
 	int score = 0;
-	int lives = 5;
-
+	int lives = (int) (Math.random()*(10) + 2);
+	
 	public static void main(String[] arg){
 		for(int i = 0; i < enemyList0.length; i++) {
-			enemyList0[i] = new Enemy("C:\\Users\\Tom\\eclipse-workspace\\Frogger\\src\\Untitledbat.gif", i*150, 100, 50);
+			enemyList0[i] = new Enemy(src + "Untitledbat.gif", i*150, table_height/4-100, 50);
 			enemyRectangles0[i] = enemyList0[i].getRectangle();
 		}
 		for(int i = 0; i < enemyList1.length; i++) {
-			enemyList1[i] = new Enemy("C:\\Users\\Tom\\eclipse-workspace\\Frogger\\src\\Wolf.gif", i*500, 250, 100);
+			enemyList1[i] = new Enemy(src + "Wolf.gif", i*500, table_height/2-200, 100);
 			enemyRectangles1[i] = enemyList1[i].getRectangle();
 		}
 		for(int i = 0; i < enemyList2.length; i++) {
-			enemyList2[i] = new Enemy("C:\\Users\\Tom\\eclipse-workspace\\Frogger\\src\\Untitledbat.gif", i*200, 600, 70);
+			enemyList2[i] = new Enemy(src + "Untitledbat.gif", i*200, table_height-250, 70);
 			enemyRectangles2[i] = enemyList2[i].getRectangle();
 		}
 		fireObj.registerOnFireEventListener(mListener);
@@ -84,7 +83,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 		super.paintComponent(g);
 		URL fontURL;
 		try {
-			fontURL = new URL("file:\\C:\\Users\\Tom\\eclipse-workspace\\Frogger\\src\\Halloween Too.ttf");
+			fontURL = new URL("file:" + src + "Halloween Too.ttf");
 			Font font;
 			font = Font.createFont(Font.TRUETYPE_FONT, fontURL.openStream());
 			font = font.deriveFont(Font.PLAIN,60);
@@ -97,7 +96,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 		}
 		Graphics2D g2d = (Graphics2D) g;
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image img = toolkit.getImage("C:\\Users\\Tom\\eclipse-workspace\\Frogger\\src\\UntiBG.png");
+		Image img = toolkit.getImage(src + "UntiBG.png");
 		g2d.drawImage(img, 0, 0, table_width, table_height, null);
 		g.setColor(Color.DARK_GRAY);
 		g.drawString("" + score, table_width-100, 50);
@@ -159,11 +158,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 	public void update() throws InterruptedException{
 		playeRectangle = pFrog.getRectangle();		
 		for(int i=0; i < enemyList0.length; i++) {
-			enemyList0[i].setVX(1);
+			enemyList0[i].setVX(3);
 			enemyRectangles0[i] = enemyList0[i].getRectangle();
 		}
-		for(int i=0; i < enemyList1.length; i++) {enemyList1[i].setVX(10); enemyRectangles1[i] = enemyList1[i].getRectangle();}
-		for(int i=0; i < enemyList2.length; i++) {enemyList2[i].setVX(5); enemyRectangles2[i] = enemyList2[i].getRectangle();}
+		for(int i=0; i < enemyList1.length; i++) {enemyList1[i].setVX(15); enemyRectangles1[i] = enemyList1[i].getRectangle();}
+		for(int i=0; i < enemyList2.length; i++) {enemyList2[i].setVX(10); enemyRectangles2[i] = enemyList2[i].getRectangle();}
 		fireObj.computeXY(stop);
 		stop = mListener.onFireEvent();
 		fire.setX(fireObj.getX());
@@ -207,7 +206,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 			if(lives <= 0) {
 				pFrog.setX(table_width/2);
 				pFrog.setY(0);
-				lives = 5;
+				lives = (int) (Math.random()*(10) + 2);
 				score = 0;
 			}
 		}
