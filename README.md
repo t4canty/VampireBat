@@ -1,1 +1,1 @@
-"# VampireBat" 
+# VampireBat
